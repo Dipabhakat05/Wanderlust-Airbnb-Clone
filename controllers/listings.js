@@ -33,12 +33,16 @@ module.exports.createListing = async (req,res, next) => {
     key: process.env.OPENCAGE_API_KEY
   });
  
-
-    let url = req.file.path;
-    let filename = req.file.filename;
     const newListing = new Listing(req.body.listing);
+    newListing.owner = req.user._id;
 
-     if (data.results.length > 0) {
+    if (req.file){
+      let url = req.file.path;
+      let filename = req.file.filename;
+      newListing.image = {url, filename};
+    }
+
+     if (data?.results?.length > 0) {
     const place = data.results[0];
     newListing.geometry = {
       type: "Point",
@@ -54,14 +58,9 @@ module.exports.createListing = async (req,res, next) => {
 
   // 3. Save to database
   await newListing.save();
-  res.redirect(`/listings/${newListing._id}`);
+  req.flash("success", "New Listing Created!");
+   return res.redirect(`/listings/${newListing._id}`);
 
-
-    newListing.owner = req.user._id;
-    newListing.image = {url, filename};
-    await newListing.save();
-     req.flash("success", "New Listing Created!");
-    res.redirect("/listings");
 };
 
 module.exports.renderEditForm = async (req,res) => { 
