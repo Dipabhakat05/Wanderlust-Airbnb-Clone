@@ -58,7 +58,7 @@ store.on("error", () => {
 
 const sessionOptions = {
     store,
-    secret:process.env.SECRET,
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -115,6 +115,7 @@ app.use((err, req, res, next) => {
     //res.status(statusCode).send(message);
 });
 
-app.listen(8080, () => {
-    console.log("server is listening to port 8080");
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`server is listening to port ${PORT}`);
 });
